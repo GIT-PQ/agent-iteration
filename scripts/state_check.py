@@ -47,7 +47,10 @@ def main():
     has_02_plan = any(f.startswith("02-变更方案") for f in files)
     has_03 = any(f.startswith("03-") for f in files)
     has_04 = any(f.startswith("04-") for f in files)
-    reports_05 = sorted(f for f in files if f.startswith("05-验证报告"))
+    reports_05 = sorted(
+        (p for p in task.iterdir() if p.is_file() and p.name.startswith("05-验证报告")),
+        key=lambda p: p.stat().st_mtime,
+    )
 
     print(f"任务目录：{task}")
 
@@ -71,7 +74,7 @@ def main():
               "（若上次验证被中断，直接重入即可——05 缺失即视为未完成）")
         return
     if len(reports_05) > 1:
-        print(f"注意：存在 {len(reports_05)} 份验证报告（每个候选版本一份），以最新候选为准：{reports_05[-1]}")
+        print(f"注意：存在 {len(reports_05)} 份验证报告（每个候选版本一份），以最新落盘的为准：{reports_05[-1].name}")
     cl = repo / "CHANGELOG.md"
     published = cl.exists() and task.name in cl.read_text(encoding="utf-8", errors="replace")
     if published:
