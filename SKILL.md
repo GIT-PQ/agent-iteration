@@ -1,5 +1,6 @@
 ---
 name: agent-iteration
+version: 2.0
 description: 按状态机驱动 agent/skill 的完整迭代生命周期：失败归因、变更设计、eval 与基线准备、最小修改、干净上下文验证、发布与回滚。当用户报告任何 agent、skill、提示词工作流或其脚本/schema 出现失败、输出质量差、需要改进或修复，发布新版本前要回归验证，或要恢复一个中断的迭代任务（工件仓库 iterations/ 下有半成品任务目录）时，使用本 skill——即使用户只说"这个 agent 输出重复了"、"修一下这个 skill"或"这个工作流最近老出错"。
 ---
 
@@ -148,9 +149,22 @@ stateDiagram-v2
 | 共享组件只测一个调用方 | 回归全部已知调用方 |
 | 发布后再补 changelog | tag、changelog、归档原子化 |
 
+## 版本与自举维护
+
+本 skill 自身也按它教的方法迭代（自举）。与通用规则的差异只有一处：发布原子化动作增加第四件——同步 frontmatter 的 `version` 字段。
+
+- **tag 是权威版本源**，frontmatter `version` 是它的对外投影——skill 被安装或复制后脱离 git 也能自报版本。
+- **变更记录**：仓库根 `CHANGELOG.md`，版本视角索引。迭代任务条目用 06 模板完整字段；不开任务编号的文档类改动记一行（对应"纯笔误不开任务"通道）。
+- **待办与讨论**：`docs/plan.md`，上游 backlog。符合失败驱动迭代定义的条目从那里转出，立任务编号按状态机执行。
+
 ## 目录
 
 ```
+CHANGELOG.md             版本视角索引（自举 3.6 的 changelog 机制）
+docs/
+  plan.md                演进计划：上游 backlog（待裁决与讨论项）
+  guide/                 《Agent迭代指南》v2 方法论全文与设计层模板
+  requirements-analysis/ 需求分析报告
 assets/templates/        9 份填写模板（编号即状态），每份头部有使用方式
 scripts/
   state_check.py         扫描 iterations/ 输出当前状态与下一步（中断重入时用）
