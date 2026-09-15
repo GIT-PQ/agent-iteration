@@ -14,7 +14,7 @@ description: 按状态机驱动 agent/skill 的完整迭代生命周期：失败
 
 ## 启动迭代任务
 
-1. **确定工件与其仓库**。后续所有存储都相对工件仓库：迭代日志 `iterations/{任务编号}/`、eval 集 `evals/`、基线库 `results/`、`CHANGELOG.md`。工件自含全部迭代历史。若工件仓库尚未 git 化，先 `git init`——候选冻结、tag、回滚点都依赖 git。
+1. **确定工件与其仓库**。后续所有存储都相对工件仓库：迭代日志 `iterations/{任务编号}/`、eval 集 `evals/`、基线库 `results/`、`../CHANGELOG.md`。工件自含全部迭代历史。若工件仓库尚未 git 化，先 `git init`——候选冻结、tag、回滚点都依赖 git。
 2. **分配任务编号**。扫描仓库 `iterations/` 下已有任务目录，取最大编号 +1（T-001 格式递增）。任务编号是迭代日志、commit message、changelog 的公共索引。
 3. **分级分诊**（进入流程前一次定档，执行中途不得悄悄升级）：
 
@@ -50,7 +50,7 @@ P3 若在验证中发现行为变化，必须升级为 P2 并回到测试准备�
 | 04-变更记录.md（含 commit） | 3.5 验证回归 | 交非实现者验证 |
 | 05-验证报告-{hash}.md | 3.6 发布 | 门禁对照后发布 |
 
-模板在 `assets/templates/`，编号即状态。每份模板头部有使用方式与职责边界（含消费方去向）——填写前先读。
+模板在 `assets/templates`，编号即状态。每份模板头部有使用方式与职责边界（含消费方去向）——填写前先读。
 
 ## 状态机总览
 
@@ -117,7 +117,7 @@ stateDiagram-v2
 ### 3.6 发布与回滚
 
 - **出口守卫**：门禁八条全过（当前失败入回归集、关键断言无退化、结构不变量通过、共享调用方无新问题、验证集不降、轨迹无未解释补丁、人工反馈清零、上一版本可回滚）。
-- 打 tag（指向验证过的候选 commit，与 05 报告的 hash 一致）→ 追加 changelog 条目（工件仓库 `CHANGELOG.md`，含门禁八条对照）→ 归档检查（任务目录 01-05 齐全）。三者原子化。失败候选不进 changelog。P3 表述调整不升版本号：不打新 tag，changelog 在当前版本条目下追加带日期的调整小节。
+- 打 tag（指向验证过的候选 commit，与 05 报告的 hash 一致）→ 追加 changelog 条目（工件仓库 `../CHANGELOG.md`，含门禁八条对照）→ 归档检查（任务目录 01-05 齐全）。三者原子化。失败候选不进 changelog。P3 表述调整不升版本号：不打新 tag，changelog 在当前版本条目下追加带日期的调整小节。
 - 生产恶化时执行回滚（切回上一版本 tag + 追加回滚条目），带新证据重入问题归因。
 - 详细：`references/06-release.md`
 
@@ -149,22 +149,11 @@ stateDiagram-v2
 | 共享组件只测一个调用方 | 回归全部已知调用方 |
 | 发布后再补 changelog | tag、changelog、归档原子化 |
 
-## 版本与自举维护
-
-本 skill 自身也按它教的方法迭代（自举）。与通用规则的差异只有一处：发布原子化动作增加第四件——同步 frontmatter 的 `version` 字段。
-
-- **tag 是权威版本源**，frontmatter `version` 是它的对外投影——skill 被安装或复制后脱离 git 也能自报版本。
-- **变更记录**：仓库根 `CHANGELOG.md`，版本视角索引。迭代任务条目用 06 模板完整字段；不开任务编号的文档类改动记一行（对应"纯笔误不开任务"通道）。
-- **待办与讨论**：`docs/plan.md`，上游 backlog。符合失败驱动迭代定义的条目从那里转出，立任务编号按状态机执行。
 
 ## 目录
 
 ```
-CHANGELOG.md             版本视角索引（自举 3.6 的 changelog 机制）
-docs/
-  plan.md                演进计划：上游 backlog（待裁决与讨论项）
-  guide/                 《Agent迭代指南》v2 方法论全文与设计层模板
-  requirements-analysis/ 需求分析报告
+
 assets/templates/        9 份填写模板（编号即状态），每份头部有使用方式
 scripts/
   state_check.py         扫描 iterations/ 输出当前状态与下一步（中断重入时用）
