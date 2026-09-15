@@ -26,8 +26,8 @@
 - **裁决结果**：
   1. **目录图一分为二**：本仓库结构图 + 归属规则表落 `README.md` §1-2；工件运行时存储布局图落指南 2.3（升级为 mermaid）；
   2. **vault 退出存储体系**：任何迭代产物不写入 vault，vault 只是文档阅读场所——指南 2.3 已改，工件自含全部迭代历史；
-  3. **模板双份保留**：`agent-iteration/assets/templates/` 为运行时权威版本，`docs/guide/templates/` 为设计层副本，同步以 assets 为准（规则入 README §3）；本次已全量同步，漂移清除；
-  4. 指南中模板路径表述（v2 修订说明、第 5 章）已更新为重构后实际位置。
+  3. **模板双份各自独立**：`docs/guide/templates/`（设计层）与 `agent-iteration/assets/templates/`（运行层）分别服务各自目录上下文，开头使用说明文字存在差异是预期、不做一致性同步，但模版内容应保持一致（约束见 README §3）；
+  4. 指南与 skill 的引用按「互不引用 + 相对路径」原则清理（指南 v2 修订说明、SKILL.md 的 changelog 路径）。
 
 ## 2. 已转任务
 

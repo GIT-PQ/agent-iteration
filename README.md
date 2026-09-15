@@ -4,26 +4,30 @@
 
 ## 1. 目录宏观图
 
-```mermaid
-flowchart LR
-    subgraph repo["本仓库"]
-        direction TB
-        subgraph prod["agent-iteration/ —— skill 产物（纯净，交付单元）"]
-            P1["SKILL.md<br/>references/（六状态行为规约）<br/>assets/templates/（9 份填写模板）<br/>scripts/state_check.py"]
-        end
-        subgraph design["docs/ —— 设计文档层（不随 skill 分发）"]
-            D1["guide/《Agent迭代指南》v2<br/>+ 设计层模板副本"]
-            D2["plan.md 演进计划"]
-            D3["requirements-analysis/ 需求分析"]
-        end
-        M["README.md · CHANGELOG.md<br/>仓库级管理文件"]
-    end
-    subgraph target["工件仓库（被迭代的 agent/skill）"]
-        T1["iterations/T-xxx/（01-05 留痕）"]
-        T2["evals/ · results/{eval_id}/{version}/"]
-        T3["工件自己的 CHANGELOG.md"]
-    end
-    prod ==|"skill 按状态机迭代工件<br/>运行时产物全部写入工件仓库"| target
+```
+本仓库
+├── agent-iteration/                 skill 产物（纯净，交付单元）
+│   ├── SKILL.md                     入口：状态机、启动流程、横切规范速查
+│   ├── references/                  各状态行为规约（01-06 对应六状态）
+│   ├── assets/
+│   │   └── templates/               9 份填写模板（编号即状态）
+│   └── scripts/
+│       └── state_check.py           断点判定（中断重入时用）
+├── docs/                            设计文档层（不随 skill 分发）
+│   ├── guide/                       《Agent迭代指南》v2 + 设计层模板
+│   ├── plan.md                      演进计划：上游 backlog
+│   └── requirements-analysis/       需求分析报告
+├── README.md                        仓库级说明
+└── CHANGELOG.md                     版本视角索引
+
+工件仓库（被迭代的 agent/skill 所在——skill 运行时产物全部写入此处）
+├── <工件源码>                       git 管理：commit 检查点 / tag 定稿
+├── iterations/
+│   └── {任务编号}/                  01-05 按状态编号留痕
+├── evals/                           稳定测试 id
+├── results/
+│   └── {eval_id}/{version}/         跨版本基线
+└── CHANGELOG.md                     工件自己的版本视角索引
 ```
 
 ## 2. 归属规则
@@ -38,10 +42,11 @@ flowchart LR
 
 ## 3. 结构规则
 
-- **`agent-iteration/` 是 skill 产物，保持纯净**：只写入 skill 运行所需的文件；项目管理类内容（仓库级目录说明、维护约定、跨层指针）一律不写入，放 `docs/` 或仓库根。
-- **`docs/` 是设计文档层**：方法论、需求分析、演进计划在此维护。
-- **模板双份同步**：`agent-iteration/assets/templates/` 为运行时**权威版本**，`docs/guide/templates/` 为设计层副本；模板变更落在 assets 后同步复制到 docs 侧，以 assets 为准。
-- **交付单元是 `agent-iteration/` 目录**：发布或安装 skill 时只取该目录，仓库根与 `docs/` 不随 skill 分发。
+1. **指南与 skill 互不引用**：`docs/guide/`（指南）与 `agent-iteration/`（skill 产物）是两个独立体系——指南不指向 `agent-iteration/` 下的文件或路径，SKILL.md 及 references 等 skill 文件也不指向 `docs/` 下的文件或路径。两者各自内部自洽，不互相指认。
+2. **skill 产物保持纯净**：`agent-iteration/` 只写入 skill 运行所需的文件；项目管理类内容（仓库说明、维护约定、跨层路径）一律不写入，放 `docs/` 或仓库根。
+3. **模板允许差异**：`docs/guide/templates/` 与 `agent-iteration/assets/templates/` 不是主从同步关系——它们各自服务于所在目录的上下文（设计层 / 运行层），开头使用说明存在差异是预期、不做一致性同步，但模版内容应保持一致。
+4. **路径分层**：规则文件（如本 README）可使用仓库相对路径；指南与 skill 内的正文及模板必须使用各自上下文的相对路径，不得出现仓库级路径（如 `agent-iteration/…`、`../…`、`/Users/…`），否则在交付或复制场景下会失效。
+5. **交付单元是 `agent-iteration/` 目录**：发布或安装 skill 时只取该目录，仓库根与 `docs/` 不随 skill 分发。
 
 ## 4. 版本管理（自举）
 
