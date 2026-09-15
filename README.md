@@ -21,14 +21,18 @@
 └── CHANGELOG.md                     版本视角索引
 
 工件仓库（被迭代的 agent/skill 所在——skill 运行时产物全部写入此处）
-├── <工件源码>                       git 管理：commit 检查点 / tag 定稿
-├── iterations/
+├── <工件源码>                       （必须）git 管理：commit 检查点 / tag 定稿
+├── iterations/                      （必须）
 │   └── {任务编号}/                  01-05 按状态编号留痕
-├── evals/                           稳定测试 id
-├── results/
+├── evals/                           （必须）稳定测试 id
+├── results/                         （必须）
 │   └── {eval_id}/{version}/         跨版本基线
-└── CHANGELOG.md                     工件自己的版本视角索引
+└── CHANGELOG.md                     （必须）工件自己的版本视角索引
 ```
+
+> 工件仓库中以上 5 项（工件源码、`iterations/`、`evals/`、`results/`、`CHANGELOG.md`）为必须存在的最小骨架；其余目录（`docs/`、`data/` 等）均为可选——按需再建，不预设空目录。
+
+> **自举特例**：本仓库用 agent-iteration 迭代它自己时，「本仓库」与「工件仓库」是同一个目录——`iterations/`、`evals/`、`results/` 直接落在本仓库根，与 `agent-iteration/`、`docs/` 并列。
 
 ## 2. 归属规则
 
