@@ -22,7 +22,7 @@ def main():
         sys.exit(2)
     iters = repo / "iterations"
     if not iters.is_dir():
-        print("iterations/ 不存在——该工件仓库尚无迭代任务。下一步：3.1 问题归因（确认工件与仓库、git 化、分配任务编号）。")
+        print("iterations/ 不存在——该工件仓库尚无迭代任务。下一步：3.1 问题归因（确认工件与仓库、提醒人 git init、分配任务编号）。")
         return
 
     task_dirs = [d for d in iters.iterdir() if d.is_dir() and re.fullmatch(r"T-\d+", d.name)]
@@ -67,7 +67,7 @@ def main():
         print("当前状态：3.3 测试准备。下一步：保存基线、建 eval，写 03-测试准备.md。")
         return
     if not has_04:
-        print("当前状态：3.4 修改实现。下一步：按触及清单修改，自检通过后 commit，写 04-变更记录.md。")
+        print("当前状态：3.4 修改实现。下一步：按触及清单修改，自检通过后提醒人 commit（人确认提交后进入 3.5），写 04-变更记录.md。")
         return
     if not reports_05:
         print("当前状态：3.5 验证回归。下一步：由非实现者在干净上下文验证候选 commit，写 05-验证报告-{hash}.md。"
@@ -79,10 +79,10 @@ def main():
     published = cl.exists() and task.name in cl.read_text(encoding="utf-8", errors="replace")
     if published:
         print(f"当前状态：3.6 发布（changelog 已含 {task.name}，任务可能已发布完结）。"
-              "下一步：核对 tag 与 changelog 是否原子化落盘；若生产恶化，执行回滚并带新证据重入 3.1。")
+              "下一步：核对 tag 与 changelog 是否原子化落盘；若生产恶化，提醒人执行回滚并带新证据重入 3.1。")
     else:
-        print("当前状态：3.6 发布。下一步：门禁八条对照 → 打 tag（指向验证过的候选 commit，与 05 报告 hash 一致）"
-              "→ changelog 条目 → 归档检查，三者原子化。")
+        print("当前状态：3.6 发布。下一步：门禁八条对照 → 提醒人打 tag（指向验证过的候选 commit，与 05 报告 hash 一致）"
+              "→ 提醒人提交留痕与 changelog → 归档检查，三者原子化。")
 
 
 if __name__ == "__main__":
