@@ -130,7 +130,7 @@ Behavior Specification，每个**状态内**填一份
 
 ```
 工件仓库（自含全部迭代历史）
-├── <工件源码>                     git 管理：commit 检查点 / tag 定稿
+├── <工件源码>                     被迭代对象（git 版本化）
 ├── iterations/
 │   └── {任务编号}/               01-05 按状态编号留痕
 ├── evals/                        稳定测试 id
